@@ -1,21 +1,22 @@
 import jwt from "jsonwebtoken";
+import asyncHandler from "../utils/asyncHandler.js";
 
-const authMiddleware = (req, res, next) => {
-  const authHeader = req.headers.authorization;
+const authMiddleware = asyncHandler(async(req, _,next)=>{
+       try {
+          const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ","")
+          if (!token) {
+             throw new ApiError(401,"unauthorized request")
+          }
+          const decodedToken = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
+          const user = await User.findById(decodedToken?._id).select("-password -refreshToken")
+          if (!user) {
+             throw new ApiError(401,"invalid access token")
+          }
+          req.user = user;
+          next()
+       } catch (error) {
+             throw new ApiError(401,error?.message || "Invalid access token")
+       }
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "No token provided" });
-  }
-
-  const token = authHeader.split(" ")[1];
-
-  try {
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    return res.status(401).json({ message: "Invalid token" });
-  }
-};
-
+})
 export default authMiddleware;
