@@ -1,92 +1,70 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
-
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 // sign up
 
 
-export const signup = async (req, res) => {
-  try {
+export const signup = asyncHandler(async (req, res) => {
+
     const { name, email, password } = req.body;
 
-    //  1. Check all fields
     if (!name || !email || !password) {
-      return res.status(400).json({
-        message: "All fields are required"
-      });
+        throw new ApiError(400, "All fields are required");
     }
 
-    //  2. Check if user already exists
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      return res.status(400).json({
-        message: "User already exists"
-      });
+        throw new ApiError(409, "User already exists");
     }
 
-   // Hash Password 
-   const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    //  4. Create user
     const user = await User.create({
-      name,
-      email,
-      password: hashedPassword
+        name,
+        email,
+        password: hashedPassword
     });
 
-    //  5. Send response (DON'T send password)
-    res.status(201).json({
-      message: "User registered successfully",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email
-      }
-    });
-
-  } catch (error) {
-    res.status(500).json({
-      message: error.message
-    });
-  }
-};
+    return res
+        .status(201)
+        .json(new ApiResponse(201, user, "User registered successfully"));
+});
 
 // login 
 
-export const login = async (req, res) => {
-  try {
+export const login = asyncHandler(async (req, res) => {
+
     const { email, password } = req.body;
 
-    // 1. Check user exists
+    if (!email || !password) {
+        throw new ApiError(400, "Email and password are required");
+    }
+
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ message: "User not found" });
+        throw new ApiError(404, "User not found");
     }
-    // 2. Compare password
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid password" });
+        throw new ApiError(401, "Invalid credentials");
     }
-     // 3. Create JWT token
-  const token = jwt.sign(
-    { id: user._id, email: user.email }, // payload
-    "smart123", // secret key
-    { expiresIn: "1h" } // expiry time
-  );
 
-  // 4. Send token to frontend
-  res.json({
-    message: "Login successful",
-    token
-  });
+    const token = jwt.sign(
+        { id: user._id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+    );
 
-
-   
-   
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, { token, user }, "Login successful")
+        );
+});
