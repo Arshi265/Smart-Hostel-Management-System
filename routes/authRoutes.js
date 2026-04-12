@@ -1,6 +1,6 @@
 import express from "express";
-import { signup } from "../controllers/authController.js";
-import authMiddleware from "../middleware/authMiddleware.js";
+import { signup, login } from "../controllers/authController.js";
+import authMiddleware from "../middlewares/authmiddleware.js";
 // it connects frontend request to controller 
 const router = express.Router();
 
