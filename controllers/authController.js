@@ -70,12 +70,25 @@ export const login = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid password" });
     }
+     // 3. Create JWT token
+  const token = jwt.sign(
+    { id: user._id, email: user.email }, // payload
+    "smart123", // secret key
+    { expiresIn: "1h" } // expiry time
+  );
 
-    // 3. Send success response
+  // 4. Send token to frontend
+  res.json({
+    message: "Login successful",
+    token
+  });
+
+
+    // 5. Send success response
     res.json({
       message: "Login successful"
     });
-
+   
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
