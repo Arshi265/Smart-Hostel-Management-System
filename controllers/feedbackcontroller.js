@@ -13,7 +13,7 @@ export const createFeedback = asyncHandler(async (req, res) => {
     }
 
     const feedback = await Feedback.create({
-        userId: req.user.id,
+        userId: req.user._id,
         message,
         rating
     });
