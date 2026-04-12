@@ -5,7 +5,7 @@ import {
   deleteFeedback
 } from "../controllers/feedbackcontroller.js";
 
-import authMiddleware from "../middleware/authMiddleware.js";
+import authMiddleware from "../middlewares/authmiddleware.js";
 
 const router = express.Router();
 

@@ -5,20 +5,16 @@ import {
   logoutUser,
   refreshAccessToken,
   getCurrentUser,
-  updateProfile,
 } from "../controllers/authController.js";
-import authMiddleware from "../middlewares/authmiddleware.js";
-// it connects frontend request to controller 
+
+import authMiddleware from "../middlewares/authMiddleware.js";
+
 const router = express.Router();
 
 router.post("/signup", registerUser);
 router.post("/login", loginUser);
-// ye check krna h smjh nhi ya kya h 
-router.get("/dashboard", authMiddleware, (req, res) => {
-  res.json({
-    message: "This is protected data",
-    user: req.user
-  });
-});
+router.post("/logout", authMiddleware, logoutUser);
+router.post("/refresh-token", refreshAccessToken);
+router.get("/me", authMiddleware, getCurrentUser);
 
 export default router;

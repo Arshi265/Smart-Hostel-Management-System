@@ -1,9 +1,9 @@
-// src/controllers/auth.controller.js
+
 import User from "../models/User.js";
 import ApiError  from "../utils/ApiError.js";
 import  ApiResponse  from "../utils/ApiResponse.js";
 import  asyncHandler  from "../utils/asyncHandler.js";
-
+import jwt from "jsonwebtoken";
 
 
 const generateAccessAndRefreshTokens = async (userId) => {
