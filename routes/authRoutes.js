@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.post("/signup", signup);
 router.post("/login", login);
+// ye check krna h smjh nhi ya kya h 
 router.get("/dashboard", authMiddleware, (req, res) => {
   res.json({
     message: "This is protected data",
