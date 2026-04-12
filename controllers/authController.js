@@ -84,10 +84,7 @@ export const login = async (req, res) => {
   });
 
 
-    // 5. Send success response
-    res.json({
-      message: "Login successful"
-    });
+   
    
   } catch (error) {
     res.status(500).json({ message: error.message });
