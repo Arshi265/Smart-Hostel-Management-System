@@ -1,7 +1,7 @@
 import Feedback from "../models/feedback.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
-import { ApiError } from "../utils/ApiError.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
+import  ApiResponse  from "../utils/ApiResponse.js";
+import  ApiError  from "../utils/ApiError.js";
+import  asyncHandler  from "../utils/asyncHandler.js";
 
 //  CREATE FEEDBACK
 export const createFeedback = asyncHandler(async (req, res) => {
@@ -13,7 +13,7 @@ export const createFeedback = asyncHandler(async (req, res) => {
     }
 
     const feedback = await Feedback.create({
-        userId: req.user.id,
+        userId: req.user._id,
         message,
         rating
     });
