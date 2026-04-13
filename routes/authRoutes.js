@@ -23,7 +23,7 @@ router.get("/me", authMiddleware, getCurrentUser);
 
 
 export default router;
-// console.log("AUTH ROUTES LOADED ✅");
+// console.log("AUTH ROUTES LOADED ");
 // import express from "express";
 // import { signup, login } from "../controllers/authController.js";
 // import authMiddleware from "../middlewares/authmiddleware.js";

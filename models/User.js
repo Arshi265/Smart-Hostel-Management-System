@@ -14,6 +14,11 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    
+    gender:{
+      type: String,
+      enum: ["male", "female", "other"],
+    },
 
     password: {
       type: String,
@@ -26,10 +31,18 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["student", "admin", "staff"],
       default: "student",
+    }, 
+     profilePic: {
+      url: {
+        type: String,
+        default: null,
+      },
+      publicId: {
+        type: String,
+        default: null,
+      },
     },
 
-    roomNumber: String,
-    hostelBlock: String,
     department: String,
 
     refreshToken: String,
