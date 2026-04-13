@@ -7,6 +7,7 @@ import connectDB from "./config/db.js";
 import userRoutes from "./routes/authRoutes.js";
 import complaintRouter from "./routes/complaintRoutes.js";
 import feedbackRouter from "./routes/feedbackroutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -29,12 +30,10 @@ app.get("/", (req, res) => {
   res.send("Backend running 🚀");
 });
 
-<<<<<<< HEAD
-=======
 app.use("/user", userRoutes);
 app.use("/complaint",complaintRouter);
 app.use("/feedback", feedbackRouter);
->>>>>>> 39bb618ddb3e3e8593263d05fbc1f5035f4e3fef
+app.use("/profile", profileRoutes)
 
 const PORT = process.env.PORT || 5000;
 
