@@ -98,4 +98,5 @@ complaintSchema.index({ status: 1, priority: 1 });
 complaintSchema.index({ student: 1, createdAt: -1 });
 complaintSchema.index({ assignedTo: 1, status: 1 });
 
-export const Complaint = mongoose.model("Complaint", complaintSchema);
+const Complaint = mongoose.model("Complaint", complaintSchema);
+export default Complaint;

@@ -12,8 +12,8 @@ import {
 } from "../controllers/complaintController.js";
 
 import authMiddleware from "../middlewares/authMiddleware.js";
-import roleMiddleware from "../middlewares/roleMiddleware.js";
-import { upload } from "../middlewares/multerMiddleware.js";
+import roleMiddleware from "../middlewares/rolemiddleware.js";
+import { upload } from "../middlewares/multermiddleware.js";
 
 const router = express.Router();
 

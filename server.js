@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/authRoutes.js";
+import complaintRouter from "./routes/complaintRoutes.js";
+import feedbackRouter from "./routes/feedbackroutes.js";
 
 dotenv.config();
 connectDB();
@@ -24,6 +26,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", userRoutes);
+app.use("/complaint",complaintRouter);
+app.use("/feedback", feedbackRouter);
 
 const PORT = process.env.PORT || 5000;
 
