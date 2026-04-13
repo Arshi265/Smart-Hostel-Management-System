@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import uploadOnCloudinary from "../utils/cloudinary.js";
 import { v2 as cloudinary } from "cloudinary";
 
 import roommodel from "../models/roommodel.js";
@@ -72,30 +73,10 @@ export const uploadProfilePic = async (req, res) => {
 
     const localFilePath = req.file.path;
 
-    // upload to cloudinary
-  let cloudinaryResponse;
-  try {
-    cloudinaryResponse = await cloudinary.uploader.upload(localFilePath, {
-      folder: "hostel_profile_pics",
-      resource_type: "image",
-      transformation: [
-        { width: 400, height: 400, crop: "fill", gravity: "face" },
-      ],
-    });
-  } catch (error) {
-    // local file delete karo agar cloudinary fail ho
-    if (fs.existsSync(localFilePath)) {
-      fs.unlinkSync(localFilePath);
-    }
-    throw new ApiError(500, "Error while uploading image to cloudinary");
-  }
-
-  // local temp file delete karo upload ke baad
-  if (fs.existsSync(localFilePath)) {
-    fs.unlinkSync(localFilePath);
-  }
-
-  // agar user ka purana profile pic hai toh cloudinary se delete karo
+  // upload to cloudinary
+  const cloudinaryResponse = await uploadOnCloudinary(localFilePath);
+ 
+ // agar user ka purana profile pic hai toh cloudinary se delete karo
   const existingUser = await User.findById(userId);
 
   if (existingUser?.profilePic?.publicId) {
@@ -136,7 +117,14 @@ export const deleteProfilePic = asyncHandler(async (req, res) => {
   }
 
   // cloudinary se delete karo
-  await cloudinary.uploader.destroy(user.profilePic.publicId);
+  const deleteResult = await cloudinary.uploader.destroy(
+    user.profilePic.publicId
+  );
+   
+  // agar cloudinary delete fail ho
+  if (deleteResult.result !== "ok") {
+    throw new ApiError(500, "Error while deleting image from cloudinary");
+  }
 
   // user se profilePic hata do
   const updatedUser = await User.findByIdAndUpdate(
